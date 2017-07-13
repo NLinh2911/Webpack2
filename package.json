@@ -1,0 +1,26 @@
+{
+  "name": "webpack2",
+  "version": "1.0.0",
+  "description": "webpack 2 basic examples",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NLinh2911/Webpack2.git"
+  },
+  "keywords": [
+    "webpack2"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NLinh2911/Webpack2/issues"
+  },
+  "homepage": "https://github.com/NLinh2911/Webpack2#readme",
+  "devDependencies": {
+    "webpack": "^3.2.0"
+  }
+}
