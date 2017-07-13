@@ -5,6 +5,7 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --entry ./src/app.js --output-filename ./dist/bundle.js",
     "build": "webpack --config webpack.config.js"
   },
   "repository": {
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/NLinh2911/Webpack2#readme",
   "devDependencies": {
-    "webpack": "^3.2.0"
+    "webpack": "^3.2.0",
+    "webpack-dev-server": "^2.5.1"
   }
 }
