@@ -91,3 +91,13 @@ const extractPlugin = new ExtractTextPlugin({
   <link rel="stylesheet" href="dist/style.css">
   <script src="./dist/bundle.js"></script> 
 ```
+
+* Nếu chạy thử `npm run build`, webpack sẽ tạo ra thư mục `dist` chứa 2 files `bundle.js` và `style.css`
+  * Trong câu lệnh webpack,  `-p` tương đương  `--optimize-minimize --define process.env.NODE_ENV="'production'` => gộp gọn các bundle (minify không còn empty spaces) giảm thiểu file size cho production
+```js
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server",
+    "build": "webpack --config webpack.config.js -p"
+  },
+```

@@ -1,6 +1,10 @@
+body {
+  text-align: center;
+  color: darkslateblue;
+}
 .container {
+  font-size: 20px;
   padding: 20px;
-  background: maroon;
-  color: #fff;
+  background: #80DEEA;
   font-family: arial;
 }
