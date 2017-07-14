@@ -3,3 +3,9 @@
   background-color: transparent;
   font-size: 25px;
 }
+
+button a {
+  color: dimgray;
+  font-weight: bold;
+  font-size: 20px;
+}

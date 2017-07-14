@@ -4,18 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Webpack 2 Example 5</title>
-  <!--<link rel="stylesheet" href="./src/css/main.css">
-  <link rel="stylesheet" href="./src/css/color.css">-->
-  <link rel="stylesheet" href="dist/style.css">
+  <title>Webpack 2 Example 6</title>
+  <link rel="stylesheet" href="./dist/commons.css">
+  <link rel="stylesheet" href="./dist/index.css">
 </head>
 <body>
   <div class='container'>
-    <h1>Webpack 2 Example 5</h1>
-    <p>Use babel-loader to transform ES6 to ES5</p>
-    <p>Use css-loader and style-loader to bundle CSS</p>
+    <h1>Webpack 2 Example 6</h1>
+    <p>Multi page applications</p>
+    <p>Set multiple entry files and use CommonsChunkPlugin to put common codes in one file</p>
     <button id='changeBtn'>Click here to alert a message</button>
+    <hr>
+    <button><a href="todos.html">Move to To-do page</a></button>
   </div>
-  <script src="./dist/bundle.js"></script>  
+  <script src="./dist/commons.js"></script>  
+  <script src="./dist/index.bundle.js"></script>
 </body>
 </html>

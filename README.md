@@ -1,103 +1,89 @@
 # Webpack2
 
-# Example 5: Babel Loader
+# Example 6: Multi Page Application
 
-```bash
-$ npm install --save-dev babel-core babel-loader babel-preset-es2015
-$ npm install --save-dev style-loader css-loader
-$ npm install --save-dev extract-text-webpack-plugin@3.0.0 // cho webpack@3.2.0
+* 2 file html: `index.html` và `todos.html`. Mỗi file có phần css và js riêng
+* `./src/css/commons.css` là phần css chung áp dụng cho cả 2 html files
+* Trong `./src/js/app.js`, như cũ `app.js` sẽ chứa code css và js cho file `index.html`, thêm file css mới `commons.css` vào
+```js
+// common chunk between index.html and todos.html
+import '../css/commons.css';
+```
+* `./src/js/todos.js` phụ trách codes cho `todos.html`, ngoài code js sẵn có, cần gọi các file css sẽ sử dụng cho `todos.html`
+```js
+// common chunk between index.html and todos.html
+import '../css/commons.css';
+// css of todos.html
+import '../css/todos.css';
 ```
 
-* File entry là `./src/js/app.js` nên các file css cũng phải đc import vào trong `app.js`
+#### Cập nhật webpack.config.js cho multi entry
+* File app.js sẽ là entry cho output index.bundle.js và todos.js sẽ là entry cho output todos.bundle.js
 
 ```js
-import '../css/main.css';
-import '../css/color.css';
-```
-
-* Sử dụng babel-loader và preset `es2015` để chuyển ES6 sang ES5
-* Sử dụng css-loader để chuyển css file sang JS module trong webpack dependencies graph và style-loader để apply css vào DOM
-
-* Sửa `npm run dev` chỉ gọi `webpack-dev-server`, `webpack-dev-server` sẽ tư động đọc `webpack.config.js` để chạy, nhưng nó không hiểu phần `path` trong `output` nên cần thêm 1 thuộc tính `publicPath`
-
-```js
-"scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "dev": "webpack-dev-server",
-  "build": "webpack --config webpack.config.js"
-},
-```
-```js
+  entry: {
+    index: './src/js/app.js',
+    todos: './src/js/todos.js'
+  },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/dist'
   },
 ```
 
-* Sử dụng babel-loader để chuyển các file `.js` sang ES5, với config này sẽ chuyển cả các file trong 'node_modules'
-* Có thể dùng `exclude` để bỏ qua 'node_modules' khi babel-loader chạy
-```js
-  module: {
-    rules: [
-      {
-        test:  /\.js$/, 
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['es2015']
-            }
-          }
-        ],
-        exclude: /(node_modules)/
-      },
-      // css-loader
-    ]
-  }
-```
+* `CommonsChunkPlugin` sẽ tạo ra 1 file output `commons` chứa các phần code chung giữa các entry files
 
-* Sử dụng css-loader và style-loader cho file `.css`. Thứ tự áp dụng các loader theo chiều ngược từ dưới lên trên, css-loader đc chạy trước chuyển css files sang JS modules để webpack bundle, style-loader sẽ áp dụng các css này trong bundle file vào DOM
-* Sử dụng `extract-text-webpack-plugin` để chuyển tất cả `.css` files trong `entry: './src/js/app.js'` sang 1 CSS bundle riêng (style.css). Nếu bundle file cần tải nặng thì tách ra sẽ làm tăng tốc độ vì CSS bundle và JS bundle đc tải song song.
-* Cần require plugin và khởi tạo instance của plugin:
-
-```js
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-
-const extractPlugin = new ExtractTextPlugin({
-  filename: 'style.css'
-})
-```
-
-```js
-// sử dụng plugin khi bundle file css
-      {
-        test: /\.css$/,
-        use: extractPlugin.extract({
-          use: ['style-loader', 'css-loader']
-        })
-      }
-```
-
-* Khai báo plugin sử dụng:
 ```js
   plugins: [
-    extractPlugin
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "commons",
+      // (the common chunk name)
+
+      filename: "commons.js",
+      // (the filename of the common chunk)
+
+      // minChunks: 3, 
+      // (Modules must be shared between 3 entries)
+
+      chunks: ["index", "todos"]
+      // (Only use these entries)
+    }),
   ]
 ```
 
-* Kết quả sẽ có 2 bundle `bundle.js` và `style.css`, link 2 file này bên trang html
-```html
-  <link rel="stylesheet" href="dist/style.css">
-  <script src="./dist/bundle.js"></script> 
+* Dùng `extract-text-webpack-plugin` như ví dụ trước, sẽ tách phần css từ output file dạng js của webpack sang 1 file css riêng. Bây giờ chúng ta có 2 trang html với css khác nhau nên cần tách thành nhiều file css riêng
+* Thay vì chỉ config 1 file `style.css`, trong plugins config:
+```js
+    new ExtractTextPlugin({
+      filename: "[name].css"
+    }),
+```
+* Sử dụng `UglifyJsPlugin` để giảm file size
+```js
+    new webpack.optimize.UglifyJsPlugin({
+      // minimize codes
+    })
 ```
 
-* Nếu chạy thử `npm run build`, webpack sẽ tạo ra thư mục `dist` chứa 2 files `bundle.js` và `style.css`
-  * Trong câu lệnh webpack,  `-p` tương đương  `--optimize-minimize --define process.env.NODE_ENV="'production'` => gộp gọn các bundle (minify không còn empty spaces) giảm thiểu file size cho production
-```js
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server",
-    "build": "webpack --config webpack.config.js -p"
-  },
+* Bundle css files và tách phần css sang file riêng => kết quả cuối cùng
+
+![img](multi-page-webpack.png)
+
+* Link những file này trong trang html
+```html
+<!--index.html-->
+  <link rel="stylesheet" href="./dist/commons.css">
+  <link rel="stylesheet" href="./dist/index.css">
+  
+  <script src="./dist/commons.js"></script>  
+  <script src="./dist/index.bundle.js"></script>
+```
+
+```html
+<!--todos.html-->
+  <link rel="stylesheet" href="./dist/commons.css">
+  <link rel="stylesheet" href="./dist/todos.css">
+  <script src="./dist/commons.js"></script>
+  <script src="./dist/todos.bundle.js"></script>
 ```

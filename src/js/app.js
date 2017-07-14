@@ -1,3 +1,6 @@
+// common chunk between index.html and todos.html
+import '../css/commons.css';
+// css of index.html
 import '../css/main.css';
 import '../css/color.css';
 
