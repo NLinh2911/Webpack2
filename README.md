@@ -10,9 +10,9 @@ $ git checkout [branch-name]
 3. Example 3: set webpack config object in `webpack.config.js` (cấu hình webpack.config.js)
 4. Example 4: use webpack-dev-server (webpack-dev-server cung cấp 1 development server chạy trên localhost)
 5. Example 5: use babel-loader, css-loader, style-loader and extract-text-webpack-plugin (dùng các loaders để chuyển đổi và gói gọn các file assets (js, css), dùng plugin để tách CSS trong entry file sang 1 output file riêng biệt). 
-6. Example 6: 
+6. Example 6: use CommonsChunkPlugin for multi pages app with multiple entry files (ứng dụng nhiều trang html sử dụng asset files riêng, cấu hình nhều file entry và output, dùng CommonsChunkPlugin để lọc ra phần code chung)
 
-## Webpack đọc tất cả các file assets (js, css, scss, img,...), tạo 1 dependencies graph và output 1 production-ready bundle
+## Webpack đọc tất cả các file assets (js, css, scss, img,...), tạo 1 dependency graph và output 1 production-ready bundle
 * Gói các nhiều file JS thành 1 bundle, giảm thiểu các http requests chỉ để tải các file này
 * Chuyển đổi SASS/ LESS sang CSS và chỉ sử dụng chúng khi cần thiết
 * Chuyển đổi JSX/ ES2015 sang JS thuần mà browsers có thể h
@@ -31,9 +31,9 @@ $ git checkout [branch-name]
 * Plugins là các tính năng hay chuyển đổi có thể đc áp dụng với tất cả modules khi `compilation` hay `chunks`
 ```js
 output: {
-path: đường dẫn tuyệt đối của file đầu ra
-filename: tên file
-publicPath: đg dẫn tương đối (cho khi chạy web-dev-server, web-dev-server chỉ đọc filename mà bỏ qua path)
+  path: 'đường dẫn tuyệt đối của file đầu ra'
+  filename: 'tên file'
+  publicPath: 'đg dẫn tương đối (cho khi chạy web-dev-server, web-dev-server chỉ đọc filename mà bỏ qua path)'
 }
 ```
 * Module: cấu hình các loaders sẽ sử dụng, các test là các loai file mà sẽ sử dụng các loaders khác nhau để xử lý, trong 1 loader có thể có nhiều preset, ví dụ preset 'es2015' của babel-loader
