@@ -1,10 +1,9 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-
-// const extractPlugin = new ExtractTextPlugin({
-//   filename: 'style.css'
-// })
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack')
+
 module.exports = {
   entry: {
     index: './src/js/app.js',
@@ -13,17 +12,19 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/dist'
+    // publicPath: '/dist'
   },
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.js$/,
         use: [{
           loader: 'babel-loader',
           options: {
             presets: ['es2015']
           }
-        }]
+        }],
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
@@ -31,6 +32,20 @@ module.exports = {
           fallback: "style-loader",
           use: "css-loader"
         })
+      },
+      {
+        test: /\.html$/,
+        use: ['html-loader']
+      },
+      {
+        test: /\.(jpg|png)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'img/',
+          }
+        }]
       }
     ]
   },
@@ -53,6 +68,17 @@ module.exports = {
     }),
     new webpack.optimize.UglifyJsPlugin({
       // minimize codes
-    })
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'src/index.html',
+      chunks: ['commons', 'index']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'todos.html',
+      template: 'src/todos.html',
+      chunks: ['commons', 'todos']
+    }),
+    new CleanWebpackPlugin(['dist'])
   ]
 };
